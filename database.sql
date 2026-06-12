@@ -1,0 +1,12 @@
+CREATE TABLE Student( Regd_no int PRIMARY KEY , Name VARCHAR(50),Branch VARCHAR(50),College_Name VARCHAR(100));
+INSRET INTO Student(1,"Mohit","IT","JES JHARSUGUDA");
+INSRET INTO Student(2,"Tushar","IT","JES JHARSUGUDA");
+INSRET INTO Student(3,"Rishi","IT","JES JHARSUGUDA");
+INSRET INTO Student(4,"Swadhin","IT","JES JHARSUGUDA");
+INSRET INTO Student(5,"Tejas","IT","JES JHARSUGUDA");
+INSRET INTO Student(6,"Aditya","IT","JES JHARSUGUDA");
+INSRET INTO Student(7,"Shashikant","IT","JES JHARSUGUDA");
+INSRET INTO Student(8,"Rudra","IT","JES JHARSUGUDA");
+INSRET INTO Student(9,"Alok","IT","JES JHARSUGUDA");
+INSRET INTO Student(10,"Hukum","IT","JES JHARSUGUDA");
+

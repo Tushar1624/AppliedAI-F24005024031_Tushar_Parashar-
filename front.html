@@ -1,0 +1,1865 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ferrari — Engineered For Emotion</title>
+    <meta name="description" content="Experience the perfect fusion of speed, innovation, and Italian craftsmanship. Ferrari — Engineered For Emotion.">
+    <meta name="theme-color" content="#000000">
+    <meta property="og:title" content="Ferrari — Engineered For Emotion">
+    <meta property="og:description" content="Experience the perfect fusion of speed, innovation, and Italian craftsmanship.">
+    <meta property="og:image" content="https://www.ferrari.com/favicon.ico">
+    <meta property="og:type" content="website">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js">
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js">
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/dist/lenis.min.js">
+    </script>
+    <style>
+        :root {
+            --ferrari-red: #DC0000;
+            --ferrari-red-dark: #B00000;
+            --ferrari-red-glow: #FF1A1A;
+            --deep-black: #000000;
+            --off-black: #0A0A0A;
+            --dark-gray: #111111;
+            --mid-gray: #1A1A1A;
+            --silver: #C0C0C0;
+            --silver-light: #E8E8E8;
+            --white: #FFFFFF;
+            --glass-bg: rgba(20, 20, 20, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --glass-highlight: rgba(255, 255, 255, 0.04);
+            --font-primary: 'DM Sans', 'Inter', system-ui, sans-serif;
+            --font-display: 'Playfair Display', Georgia, serif;
+            --font-mono: 'SF Mono', 'Fira Code', monospace;
+            --ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
+            --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+            --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: auto;
+            background: #000;
+            overflow-x: hidden;
+        }
+
+        body {
+            font-family: var(--font-primary);
+            background: var(--deep-black);
+            color: var(--white);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            cursor: default;
+            overflow-x: hidden;
+            line-height: 1.5;
+        }
+
+        html.lenis,
+        html.lenis body {
+            height: auto;
+        }
+        .lenis.lenis-smooth {
+            scroll-behavior: auto !important;
+        }
+        .lenis.lenis-smooth [data-lenis-prevent] {
+            overscroll-behavior: contain;
+        }
+        .lenis.lenis-stopped {
+            overflow: hidden;
+        }
+        .lenis.lenis-scrolling iframe {
+            pointer-events: none;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #000;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 2px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--ferrari-red);
+        }
+
+        /* Selection */
+        ::selection {
+            background: var(--ferrari-red);
+            color: #fff;
+        }
+        ::-moz-selection {
+            background: var(--ferrari-red);
+            color: #fff;
+        }
+
+        /* Canvas Container */
+        #hero-canvas-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 0;
+            pointer-events: none;
+        }
+        #hero-canvas-container canvas {
+            display: block;
+        }
+
+        /* Main Content Wrapper */
+        .main-content {
+            position: relative;
+            z-index: 1;
+            pointer-events: none;
+        }
+        .main-content>* {
+            pointer-events: auto;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            z-index: 2;
+            pointer-events: none;
+        }
+        .hero-content {
+            text-align: center;
+            z-index: 3;
+            pointer-events: auto;
+            padding: 0 2rem;
+            max-width: 900px;
+        }
+        .hero-badge {
+            display: inline-block;
+            padding: 8px 24px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 100px;
+            font-size: 0.75rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 2rem;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            background: rgba(0, 0, 0, 0.3);
+        }
+        .hero-title {
+            font-family: var(--font-display);
+            font-size: clamp(3rem, 7vw, 7rem);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            line-height: 1.05;
+            color: #fff;
+            margin-bottom: 1.5rem;
+            text-shadow: 0 0 80px rgba(220, 0, 0, 0.3);
+        }
+        .hero-title .accent {
+            color: var(--ferrari-red);
+            font-style: italic;
+        }
+        .hero-subtitle {
+            font-size: clamp(1rem, 1.8vw, 1.25rem);
+            color: rgba(255, 255, 255, 0.6);
+            font-weight: 300;
+            letter-spacing: 0.02em;
+            margin-bottom: 3rem;
+            max-width: 550px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.6;
+        }
+        .hero-cta-group {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 16px 36px;
+            background: var(--ferrari-red);
+            color: #fff;
+            border: none;
+            border-radius: 100px;
+            font-family: var(--font-primary);
+            font-size: 0.9rem;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            cursor: pointer;
+            transition: all 0.4s var(--ease-out-expo);
+            position: relative;
+            overflow: hidden;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, transparent 60%);
+            border-radius: 100px;
+            transition: opacity 0.4s;
+        }
+        .btn-primary:hover {
+            background: #FF1A1A;
+            transform: translateY(-2px);
+            box-shadow: 0 20px 50px rgba(220, 0, 0, 0.4), 0 0 80px rgba(220, 0, 0, 0.2);
+        }
+        .btn-primary:active {
+            transform: scale(0.96);
+            transition: transform 0.15s var(--ease-out-expo);
+        }
+        .btn-secondary {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 16px 36px;
+            background: transparent;
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 100px;
+            font-family: var(--font-primary);
+            font-size: 0.9rem;
+            font-weight: 500;
+            letter-spacing: 0.04em;
+            cursor: pointer;
+            transition: all 0.4s var(--ease-out-expo);
+            text-decoration: none;
+            white-space: nowrap;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            background: rgba(0, 0, 0, 0.2);
+        }
+        .btn-secondary:hover {
+            border-color: rgba(255, 255, 255, 0.7);
+            background: rgba(255, 255, 255, 0.06);
+            transform: translateY(-2px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+        }
+        .btn-icon {
+            width: 18px;
+            height: 18px;
+            transition: transform 0.3s var(--ease-out-expo);
+        }
+        .btn-primary:hover .btn-icon,
+        .btn-secondary:hover .btn-icon {
+            transform: translateX(3px);
+        }
+
+        /* Scroll Indicator */
+        .scroll-indicator {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 3;
+            pointer-events: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: opacity 0.4s;
+        }
+        .scroll-indicator:hover {
+            opacity: 1;
+        }
+        .scroll-line {
+            width: 1px;
+            height: 50px;
+            background: linear-gradient(to bottom, rgba(255, 255, 255, 0.6), transparent);
+            animation: scrollPulse 2s ease-in-out infinite;
+        }
+        .scroll-text {
+            font-size: 0.65rem;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.5);
+        }
+        @keyframes scrollPulse {
+            0%,
+            100% {
+                opacity: 0.4;
+                transform: scaleY(1);
+            }
+            50% {
+                opacity: 1;
+                transform: scaleY(1.3);
+            }
+        }
+
+        /* Performance Section */
+        .performance-section {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 6rem 2rem;
+            z-index: 2;
+            background: transparent;
+        }
+        .performance-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 2rem;
+            max-width: 1100px;
+            width: 100%;
+        }
+        .perf-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 2.5rem 2rem;
+            text-align: center;
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            transition: all 0.5s var(--ease-out-expo);
+            position: relative;
+            overflow: hidden;
+        }
+        .perf-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at center, rgba(220, 0, 0, 0.08) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+        .perf-card:hover::before {
+            opacity: 1;
+        }
+        .perf-card:hover {
+            border-color: rgba(220, 0, 0, 0.3);
+            transform: translateY(-8px);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6), 0 0 40px rgba(220, 0, 0, 0.1);
+        }
+        .perf-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            display: block;
+            filter: grayscale(30%);
+            transition: filter 0.5s;
+        }
+        .perf-card:hover .perf-icon {
+            filter: grayscale(0%);
+        }
+        .perf-value {
+            font-family: var(--font-display);
+            font-size: 3.5rem;
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            color: #fff;
+            line-height: 1;
+            margin-bottom: 0.5rem;
+        }
+        .perf-value .unit {
+            font-size: 1.2rem;
+            color: var(--ferrari-red);
+            font-weight: 500;
+            margin-left: 2px;
+        }
+        .perf-label {
+            font-size: 0.8rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.5);
+            font-weight: 500;
+        }
+        .perf-gauge {
+            width: 100%;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            margin-top: 1.5rem;
+            overflow: hidden;
+        }
+        .perf-gauge-fill {
+            height: 100%;
+            background: var(--ferrari-red);
+            border-radius: 2px;
+            width: 0%;
+            transition: width 1.5s var(--ease-out-expo);
+            box-shadow: 0 0 10px rgba(220, 0, 0, 0.5);
+        }
+
+        /* Technology Section */
+        .tech-section {
+            position: relative;
+            min-height: 100vh;
+            padding: 6rem 2rem;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .section-label {
+            font-size: 0.7rem;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: var(--ferrari-red);
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+        .section-title {
+            font-family: var(--font-display);
+            font-size: clamp(2.5rem, 5vw, 4.5rem);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            text-align: center;
+            margin-bottom: 1rem;
+            color: #fff;
+        }
+        .section-subtitle {
+            color: rgba(255, 255, 255, 0.5);
+            text-align: center;
+            max-width: 500px;
+            margin-bottom: 4rem;
+            font-weight: 300;
+            font-size: 1.05rem;
+            letter-spacing: 0.02em;
+        }
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 1.5rem;
+            max-width: 1100px;
+            width: 100%;
+        }
+        .tech-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 2.5rem 2rem;
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            transition: all 0.5s var(--ease-out-expo);
+            cursor: default;
+            position: relative;
+            overflow: hidden;
+            transform-style: preserve-3d;
+            perspective: 800px;
+        }
+        .tech-card-inner {
+            position: relative;
+            z-index: 1;
+            transition: transform 0.3s var(--ease-out-expo);
+        }
+        .tech-card:hover {
+            border-color: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.7);
+        }
+        .tech-card::after {
+            content: '';
+            position: absolute;
+            inset: -1px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, rgba(220, 0, 0, 0.3) 0%, transparent 50%, rgba(255, 255, 255, 0.05) 100%);
+            opacity: 0;
+            transition: opacity 0.5s;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .tech-card:hover::after {
+            opacity: 1;
+        }
+        .tech-card-number {
+            font-family: var(--font-display);
+            font-size: 3rem;
+            font-weight: 700;
+            color: rgba(255, 255, 255, 0.06);
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            z-index: 0;
+            transition: color 0.5s;
+        }
+        .tech-card:hover .tech-card-number {
+            color: rgba(220, 0, 0, 0.15);
+        }
+        .tech-card h3 {
+            font-family: var(--font-display);
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 0.8rem;
+            color: #fff;
+            letter-spacing: -0.01em;
+        }
+        .tech-card p {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.5);
+            line-height: 1.7;
+            font-weight: 300;
+        }
+        .tech-card-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            background: rgba(220, 0, 0, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            font-size: 1.3rem;
+            transition: all 0.5s;
+        }
+        .tech-card:hover .tech-card-icon {
+            background: rgba(220, 0, 0, 0.3);
+            box-shadow: 0 0 30px rgba(220, 0, 0, 0.2);
+        }
+
+        /* Collection Section */
+        .collection-section {
+            position: relative;
+            min-height: 100vh;
+            padding: 6rem 2rem;
+            z-index: 2;
+            overflow: hidden;
+        }
+        .collection-scroll {
+            display: flex;
+            gap: 1.5rem;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            padding: 2rem 0;
+            cursor: grab;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .collection-scroll::-webkit-scrollbar {
+            display: none;
+        }
+        .collection-scroll:active {
+            cursor: grabbing;
+        }
+        .collection-card {
+            flex: 0 0 auto;
+            width: clamp(300px, 40vw, 420px);
+            scroll-snap-align: center;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            overflow: hidden;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            transition: all 0.5s var(--ease-out-expo);
+            position: relative;
+            cursor: pointer;
+            min-height: 420px;
+            display: flex;
+            flex-direction: column;
+        }
+        .collection-card:hover {
+            border-color: rgba(220, 0, 0, 0.4);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.7), 0 0 60px rgba(220, 0, 0, 0.08);
+            transform: translateY(-10px);
+        }
+        .collection-card-image {
+            width: 100%;
+            height: 260px;
+            background: linear-gradient(135deg, #1a1a1a 0%, #0d0d0d 50%, #1a1a1a 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            position: relative;
+            overflow: hidden;
+        }
+        .collection-card-image::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at center, rgba(220, 0, 0, 0.2) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+        .collection-card:hover .collection-card-image::before {
+            opacity: 1;
+        }
+        .collection-card-body {
+            padding: 1.5rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .collection-card-body h3 {
+            font-family: var(--font-display);
+            font-size: 1.3rem;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+        }
+        .collection-card-body .spec-row {
+            display: flex;
+            gap: 1.5rem;
+            margin-top: 0.8rem;
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.5);
+            letter-spacing: 0.05em;
+        }
+        .collection-card-body .spec-row span {
+            color: var(--ferrari-red);
+            font-weight: 600;
+        }
+
+        /* Experience Section */
+        .experience-section {
+            position: relative;
+            min-height: 100vh;
+            padding: 6rem 2rem;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        .exp-timeline {
+            display: flex;
+            gap: 3rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 3rem;
+            max-width: 900px;
+        }
+        .exp-dot {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+            font-weight: 700;
+            transition: all 0.5s;
+            cursor: default;
+            position: relative;
+        }
+        .exp-dot::after {
+            content: '';
+            position: absolute;
+            inset: -6px;
+            border-radius: 50%;
+            border: 1px solid rgba(220, 0, 0, 0);
+            transition: all 0.5s;
+        }
+        .exp-dot:hover {
+            border-color: var(--ferrari-red);
+            box-shadow: 0 0 40px rgba(220, 0, 0, 0.3);
+            transform: scale(1.1);
+        }
+        .exp-dot:hover::after {
+            border-color: rgba(220, 0, 0, 0.4);
+            inset: -12px;
+        }
+        .exp-dot-label {
+            font-size: 0.7rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.5);
+            margin-top: 0.6rem;
+        }
+
+        /* Footer */
+        .footer-section {
+            position: relative;
+            z-index: 2;
+            padding: 4rem 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+        .footer-logo {
+            font-family: var(--font-display);
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            color: #fff;
+        }
+        .footer-links {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.5);
+            text-decoration: none;
+            font-size: 0.8rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            transition: color 0.3s;
+            font-weight: 500;
+        }
+        .footer-links a:hover {
+            color: var(--ferrari-red);
+        }
+        .footer-copy {
+            color: rgba(255, 255, 255, 0.25);
+            font-size: 0.7rem;
+            letter-spacing: 0.08em;
+        }
+
+        /* Loading overlay */
+        .loading-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.8s var(--ease-out-expo), visibility 0.8s;
+            pointer-events: all;
+        }
+        .loading-overlay.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+        .loading-logo {
+            font-family: var(--font-display);
+            font-size: 3rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            color: #fff;
+            animation: loadPulse 1.5s ease-in-out infinite;
+        }
+        @keyframes loadPulse {
+            0%,
+            100% {
+                opacity: 0.4;
+            }
+            50% {
+                opacity: 1;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: clamp(2.2rem, 8vw, 3.5rem);
+            }
+            .hero-subtitle {
+                font-size: 0.95rem;
+            }
+            .btn-primary,
+            .btn-secondary {
+                padding: 14px 28px;
+                font-size: 0.8rem;
+                width: 100%;
+                justify-content: center;
+            }
+            .hero-cta-group {
+                flex-direction: column;
+                width: 100%;
+                max-width: 300px;
+                margin: 0 auto;
+            }
+            .performance-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
+            }
+            .perf-value {
+                font-size: 2.5rem;
+            }
+            .tech-grid {
+                grid-template-columns: 1fr;
+            }
+            .collection-card {
+                width: 75vw;
+                min-height: 350px;
+            }
+            .section-title {
+                font-size: 2rem;
+            }
+            .footer-section {
+                flex-direction: column;
+                text-align: center;
+                gap: 1.5rem;
+            }
+            .footer-links {
+                justify-content: center;
+            }
+        }
+        @media (max-width: 480px) {
+            .performance-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 0.8rem;
+            }
+            .perf-card {
+                padding: 1.5rem 1rem;
+            }
+            .perf-value {
+                font-size: 2rem;
+            }
+            .perf-label {
+                font-size: 0.65rem;
+            }
+            .collection-card {
+                width: 85vw;
+                min-height: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loading-overlay">
+        <div class="loading-logo">FERRARI</div>
+    </div>
+
+    <!-- 3D Canvas -->
+    <div id="hero-canvas-container"></div>
+
+    <!-- Main Content -->
+    <div class="main-content" id="main-content">
+
+        <!-- Hero Section -->
+        <section class="hero-section" id="hero-section">
+            <div class="hero-content" id="hero-content">
+                <div class="hero-badge">Italian Excellence Since 1947</div>
+                <h1 class="hero-title">Engineered For<br><span class="accent">Emotion</span></h1>
+                <p class="hero-subtitle">Experience the perfect fusion of speed, innovation, and Italian craftsmanship — where every detail ignites the soul.</p>
+                <div class="hero-cta-group">
+                    <a href="#collection" class="btn-primary">
+                        Explore Collection
+                        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                    </a>
+                    <a href="#tech" class="btn-secondary">
+                        Configure Your Ferrari
+                        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20V4M4 12h16"/></svg>
+                    </a>
+                </div>
+            </div>
+            <div class="scroll-indicator" id="scroll-indicator">
+                <div class="scroll-line"></div>
+                <span class="scroll-text">Scroll to Discover</span>
+            </div>
+        </section>
+
+        <!-- Performance Section -->
+        <section class="performance-section" id="performance">
+            <div class="performance-grid">
+                <div class="perf-card" data-perf="speed">
+                    <span class="perf-icon">🏎️</span>
+                    <div class="perf-value"><span class="counter" data-target="340">0</span><span class="unit">km/h</span></div>
+                    <div class="perf-label">Top Speed</div>
+                    <div class="perf-gauge"><div class="perf-gauge-fill" data-fill="95"></div></div>
+                </div>
+                <div class="perf-card" data-perf="hp">
+                    <span class="perf-icon">⚡</span>
+                    <div class="perf-value"><span class="counter" data-target="986">0</span><span class="unit">HP</span></div>
+                    <div class="perf-label">Horsepower</div>
+                    <div class="perf-gauge"><div class="perf-gauge-fill" data-fill="92"></div></div>
+                </div>
+                <div class="perf-card" data-perf="torque">
+                    <span class="perf-icon">🔧</span>
+                    <div class="perf-value"><span class="counter" data-target="718">0</span><span class="unit">Nm</span></div>
+                    <div class="perf-label">Torque</div>
+                    <div class="perf-gauge"><div class="perf-gauge-fill" data-fill="88"></div></div>
+                </div>
+                <div class="perf-card" data-perf="accel">
+                    <span class="perf-icon">🚀</span>
+                    <div class="perf-value"><span class="counter-decimal" data-target="2.5">0</span><span class="unit">s</span></div>
+                    <div class="perf-label">0–100 km/h</div>
+                    <div class="perf-gauge"><div class="perf-gauge-fill" data-fill="97"></div></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Technology Section -->
+        <section class="tech-section" id="tech">
+            <span class="section-label">Innovation</span>
+            <h2 class="section-title">Cutting-Edge Technology</h2>
+            <p class="section-subtitle">Where engineering precision meets artistic mastery — every component a testament to relentless innovation.</p>
+            <div class="tech-grid">
+                <div class="tech-card" data-tilt>
+                    <div class="tech-card-inner">
+                        <div class="tech-card-icon">🪶</div>
+                        <h3>Carbon Fiber Engineering</h3>
+                        <p>Ultra-lightweight monocoque chassis crafted from aerospace-grade carbon fiber, delivering uncompromising rigidity and weight reduction.</p>
+                    </div>
+                    <div class="tech-card-number">01</div>
+                </div>
+                <div class="tech-card" data-tilt>
+                    <div class="tech-card-inner">
+                        <div class="tech-card-icon">🔋</div>
+                        <h3>Hybrid Performance</h3>
+                        <p>Revolutionary PHEV system combining a twin-turbo V8 with electric motors for breathtaking acceleration and efficiency.</p>
+                    </div>
+                    <div class="tech-card-number">02</div>
+                </div>
+                <div class="tech-card" data-tilt>
+                    <div class="tech-card-inner">
+                        <div class="tech-card-icon">💨</div>
+                        <h3>Advanced Aerodynamics</h3>
+                        <p>Active aerodynamic elements that adapt in real-time, maximizing downforce and minimizing drag at any speed.</p>
+                    </div>
+                    <div class="tech-card-number">03</div>
+                </div>
+                <div class="tech-card" data-tilt>
+                    <div class="tech-card-inner">
+                        <div class="tech-card-icon">🧠</div>
+                        <h3>Driving Intelligence</h3>
+                        <p>AI-powered dynamic control systems that learn your driving style and optimize every parameter for the ultimate experience.</p>
+                    </div>
+                    <div class="tech-card-number">04</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Collection Section -->
+        <section class="collection-section" id="collection">
+            <span class="section-label">The Collection</span>
+            <h2 class="section-title">Iconic Masterpieces</h2>
+            <p class="section-subtitle">Discover the lineage of legends — each model a chapter in the Ferrari story.</p>
+            <div class="collection-scroll" id="collection-scroll">
+                <div class="collection-card">
+                    <div class="collection-card-image">🐎</div>
+                    <div class="collection-card-body">
+                        <h3>SF90 Stradale</h3>
+                        <div class="spec-row"><span>986 HP</span> · <span>2.5s</span> · <span>340 km/h</span></div>
+                        <p style="color:rgba(255,255,255,0.4);font-size:0.8rem;margin-top:0.5rem;">The first-ever PHEV Ferrari — where Formula 1 technology meets the road.</p>
+                    </div>
+                </div>
+                <div class="collection-card">
+                    <div class="collection-card-image">🏁</div>
+                    <div class="collection-card-body">
+                        <h3>296 GTB</h3>
+                        <div class="spec-row"><span>819 HP</span> · <span>2.9s</span> · <span>330 km/h</span></div>
+                        <p style="color:rgba(255,255,255,0.4);font-size:0.8rem;margin-top:0.5rem;">A revolutionary V6 hybrid that redefines the boundaries of performance.</p>
+                    </div>
+                </div>
+                <div class="collection-card">
+                    <div class="collection-card-image">👑</div>
+                    <div class="collection-card-body">
+                        <h3>812 Superfast</h3>
+                        <div class="spec-row"><span>789 HP</span> · <span>2.9s</span> · <span>340 km/h</span></div>
+                        <p style="color:rgba(255,255,255,0.4);font-size:0.8rem;margin-top:0.5rem;">The most powerful naturally aspirated V12 ever created for a production car.</p>
+                    </div>
+                </div>
+                <div class="collection-card">
+                    <div class="collection-card-image">💎</div>
+                    <div class="collection-card-body">
+                        <h3>F8 Tributo</h3>
+                        <div class="spec-row"><span>710 HP</span> · <span>2.9s</span> · <span>340 km/h</span></div>
+                        <p style="color:rgba(255,255,255,0.4);font-size:0.8rem;margin-top:0.5rem;">A tribute to the most powerful V8 in Ferrari history — pure driving passion.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Experience Section -->
+        <section class="experience-section" id="experience">
+            <span class="section-label">Heritage</span>
+            <h2 class="section-title">A Legacy of Excellence</h2>
+            <p class="section-subtitle">From the racetracks of Maranello to the open road — over seven decades of unrivalled passion.</p>
+            <div class="exp-timeline">
+                <div style="text-align:center;">
+                    <div class="exp-dot">1947</div>
+                    <div class="exp-dot-label">Founded</div>
+                </div>
+                <div style="text-align:center;">
+                    <div class="exp-dot">🏆</div>
+                    <div class="exp-dot-label">16 F1 Titles</div>
+                </div>
+                <div style="text-align:center;">
+                    <div class="exp-dot">∞</div>
+                    <div class="exp-dot-label">Innovation</div>
+                </div>
+                <div style="text-align:center;">
+                    <div class="exp-dot">🔥</div>
+                    <div class="exp-dot-label">Passion</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer-section" id="footer">
+            <div class="footer-logo">FERRARI</div>
+            <div class="footer-links">
+                <a href="#">Heritage</a>
+                <a href="#">Racing</a>
+                <a href="#">Innovation</a>
+                <a href="#">Contact</a>
+                <a href="#">Privacy</a>
+            </div>
+            <div class="footer-copy">© 2026 Ferrari S.p.A. — All rights reserved.</div>
+        </footer>
+    </div>
+
+    <script>
+        (function() {
+            // ─────────────────────────────────────
+            // LOADING SEQUENCE
+            // ─────────────────────────────────────
+            const loadingOverlay = document.getElementById('loading-overlay');
+            const heroContent = document.getElementById('hero-content');
+            const scrollIndicator = document.getElementById('scroll-indicator');
+
+            // ─────────────────────────────────────
+            // THREE.JS 3D SCENE
+            // ─────────────────────────────────────
+            const container = document.getElementById('hero-canvas-container');
+            const scene = new THREE.Scene();
+
+            // Dark cinematic background
+            scene.background = new THREE.Color(0x000000);
+            scene.fog = new THREE.Fog(0x000000, 8, 35);
+
+            const camera = new THREE.PerspectiveCamera(42, window.innerWidth / window.innerHeight, 0.1, 100);
+            camera.position.set(3.5, 1.3, 5.5);
+            camera.lookAt(0, 0.35, 0);
+
+            const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            renderer.shadowMap.enabled = true;
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+            renderer.toneMapping = THREE.ACESFilmicToneMapping;
+            renderer.toneMappingExposure = 1.2;
+            renderer.outputColorSpace = THREE.SRGBColorSpace;
+            container.appendChild(renderer.domElement);
+
+            // ─────────────────────────────────────
+            // LIGHTING — Cinematic Studio Setup
+            // ─────────────────────────────────────
+            const ambientLight = new THREE.AmbientLight(0x1a1a2e, 0.6);
+            scene.add(ambientLight);
+
+            const keyLight = new THREE.DirectionalLight(0xffffff, 4.5);
+            keyLight.position.set(8, 6, 4);
+            keyLight.castShadow = true;
+            keyLight.shadow.mapSize.width = 2048;
+            keyLight.shadow.mapSize.height = 2048;
+            keyLight.shadow.camera.near = 0.5;
+            keyLight.shadow.camera.far = 50;
+            keyLight.shadow.camera.left = -8;
+            keyLight.shadow.camera.right = 8;
+            keyLight.shadow.camera.top = 8;
+            keyLight.shadow.camera.bottom = -8;
+            keyLight.shadow.bias = -0.0002;
+            keyLight.shadow.normalBias = 0.02;
+            scene.add(keyLight);
+
+            const rimLight = new THREE.DirectionalLight(0x8899cc, 2.5);
+            rimLight.position.set(-5, 2, -3);
+            scene.add(rimLight);
+
+            const fillLight = new THREE.DirectionalLight(0x334466, 1.8);
+            fillLight.position.set(0, 1.5, 6);
+            scene.add(fillLight);
+
+            const underGlow = new THREE.PointLight(0xDC0000, 3, 5, 1.5);
+            underGlow.position.set(0, -0.5, 0);
+            scene.add(underGlow);
+
+            const topAccent = new THREE.PointLight(0xffffff, 2, 6, 2);
+            topAccent.position.set(0, 3.5, 0);
+            scene.add(topAccent);
+
+            // ─────────────────────────────────────
+            // GROUND PLANE — Showroom Floor
+            // ─────────────────────────────────────
+            const groundGeo = new THREE.PlaneGeometry(30, 30);
+            const groundMat = new THREE.MeshStandardMaterial({
+                color: 0x0a0a0a,
+                roughness: 0.35,
+                metalness: 0.2,
+            });
+            const ground = new THREE.Mesh(groundGeo, groundMat);
+            ground.rotation.x = -Math.PI / 2;
+            ground.position.y = -1.35;
+            ground.receiveShadow = true;
+            scene.add(ground);
+
+            // Subtle grid lines on ground
+            const gridHelper = new THREE.PolarGridHelper(12, 48, 24, 256, 0x1a1a1a, 0x1a1a1a);
+            gridHelper.position.y = -1.34;
+            scene.add(gridHelper);
+
+            // ─────────────────────────────────────
+            // PROCEDURAL FERRARI SUPERCAR
+            // ─────────────────────────────────────
+            const carGroup = new THREE.Group();
+
+            // Materials
+            const bodyMaterial = new THREE.MeshPhysicalMaterial({
+                color: new THREE.Color('#DC0000'),
+                metalness: 0.95,
+                roughness: 0.18,
+                clearcoat: 0.4,
+                clearcoatRoughness: 0.1,
+                reflectivity: 1,
+            });
+
+            const darkBodyMaterial = new THREE.MeshPhysicalMaterial({
+                color: new THREE.Color('#0a0a0a'),
+                metalness: 0.8,
+                roughness: 0.25,
+                clearcoat: 0.3,
+                clearcoatRoughness: 0.15,
+            });
+
+            const glassMaterial = new THREE.MeshPhysicalMaterial({
+                color: new THREE.Color('#111122'),
+                metalness: 0.05,
+                roughness: 0.08,
+                clearcoat: 0.5,
+                clearcoatRoughness: 0.05,
+                opacity: 0.75,
+                transparent: true,
+                envMapIntensity: 1.5,
+            });
+
+            const wheelMaterial = new THREE.MeshStandardMaterial({
+                color: new THREE.Color('#1a1a1a'),
+                metalness: 0.9,
+                roughness: 0.3,
+            });
+
+            const wheelRimMaterial = new THREE.MeshStandardMaterial({
+                color: new THREE.Color('#d0d0d0'),
+                metalness: 0.95,
+                roughness: 0.15,
+            });
+
+            const carbonMaterial = new THREE.MeshStandardMaterial({
+                color: new THREE.Color('#1c1c1c'),
+                metalness: 0.6,
+                roughness: 0.4,
+            });
+
+            // --- Main Body ---
+            const mainBodyGeo = new THREE.BoxGeometry(2.2, 0.45, 4.6, 8, 4, 8);
+            // Sculpt the body by modifying vertices slightly for a more organic shape
+            const positions = mainBodyGeo.attributes.position;
+            for (let i = 0; i < positions.count; i++) {
+                let x = positions.getX(i);
+                let y = positions.getY(i);
+                let z = positions.getZ(i);
+                // Taper the front
+                if (z > 1.5) {
+                    const taper = (z - 1.5) / 0.8;
+                    const shrink = 1 - taper * 0.45;
+                    x *= Math.max(shrink, 0.55);
+                    y -= taper * 0.15;
+                }
+                // Taper the rear slightly
+                if (z < -1.8) {
+                    const taper = Math.abs(z + 1.8) / 0.5;
+                    const shrink = 1 - taper * 0.3;
+                    x *= Math.max(shrink, 0.7);
+                }
+                // Round the top edges
+                if (y > 0.15 && Math.abs(x) > 0.8) {
+                    y -= (Math.abs(x) - 0.8) * 0.25;
+                }
+                positions.setXYZ(i, x, y, z);
+            }
+            mainBodyGeo.computeVertexNormals();
+            const mainBody = new THREE.Mesh(mainBodyGeo, bodyMaterial);
+            mainBody.position.y = 0.55;
+            mainBody.castShadow = true;
+            mainBody.receiveShadow = true;
+            carGroup.add(mainBody);
+
+            // --- Lower Body / Side Skirts ---
+            const lowerBodyGeo = new THREE.BoxGeometry(2.05, 0.2, 4.4, 4, 2, 8);
+            const lowerBodyPos = lowerBodyGeo.attributes.position;
+            for (let i = 0; i < lowerBodyPos.count; i++) {
+                let x = lowerBodyPos.getX(i);
+                let z = lowerBodyPos.getZ(i);
+                if (z > 1.5) { const t = (z - 1.5) / 0.8;
+                    x *= Math.max(1 - t * 0.45, 0.55); }
+                if (z < -1.8) { const t = Math.abs(z + 1.8) / 0.5;
+                    x *= Math.max(1 - t * 0.3, 0.7); }
+                lowerBodyPos.setXYZ(i, x, lowerBodyPos.getY(i), z);
+            }
+            lowerBodyGeo.computeVertexNormals();
+            const lowerBody = new THREE.Mesh(lowerBodyGeo, carbonMaterial);
+            lowerBody.position.y = 0.22;
+            lowerBody.castShadow = true;
+            carGroup.add(lowerBody);
+
+            // --- Front Bumper / Nose ---
+            const frontBumperGeo = new THREE.BoxGeometry(1.5, 0.3, 0.5, 6, 2, 2);
+            const fbPos = frontBumperGeo.attributes.position;
+            for (let i = 0; i < fbPos.count; i++) {
+                let x = fbPos.getX(i);
+                let z = fbPos.getZ(i);
+                if (z > 0.1) { x *= 0.7;
+                    fbPos.setZ(i, z * 0.5); }
+                fbPos.setXYZ(i, x, fbPos.getY(i), z);
+            }
+            frontBumperGeo.computeVertexNormals();
+            const frontBumper = new THREE.Mesh(frontBumperGeo, bodyMaterial);
+            frontBumper.position.set(0, 0.45, 2.45);
+            frontBumper.castShadow = true;
+            carGroup.add(frontBumper);
+
+            // --- Rear Diffuser ---
+            const diffuserGeo = new THREE.BoxGeometry(1.8, 0.25, 0.45, 6, 2, 2);
+            const diffuser = new THREE.Mesh(diffuserGeo, carbonMaterial);
+            diffuser.position.set(0, 0.28, -2.45);
+            diffuser.castShadow = true;
+            carGroup.add(diffuser);
+
+            // --- Cabin / Greenhouse ---
+            const cabinGeo = new THREE.SphereGeometry(0.75, 16, 10, 0, Math.PI * 2, 0, Math.PI / 2.2);
+            const cabin = new THREE.Mesh(cabinGeo, glassMaterial);
+            cabin.scale.set(1, 0.55, 0.85);
+            cabin.position.set(0, 0.8, 0.15);
+            cabin.rotation.x = -0.08;
+            cabin.castShadow = true;
+            carGroup.add(cabin);
+
+            // Cabin frame
+            const cabinFrameGeo = new THREE.TorusGeometry(0.7, 0.04, 8, 16, Math.PI);
+            const cabinFrame = new THREE.Mesh(cabinFrameGeo, darkBodyMaterial);
+            cabinFrame.scale.set(1.05, 0.6, 0.9);
+            cabinFrame.position.set(0, 0.82, 0.15);
+            cabinFrame.rotation.x = Math.PI / 2 - 0.08;
+            cabinFrame.rotation.z = Math.PI;
+            carGroup.add(cabinFrame);
+
+            // --- Rear Spoiler ---
+            const spoilerGeo = new THREE.BoxGeometry(2.1, 0.06, 0.3, 8, 2, 4);
+            const spoiler = new THREE.Mesh(spoilerGeo, carbonMaterial);
+            spoiler.position.set(0, 0.95, -2.1);
+            spoiler.rotation.x = -0.25;
+            spoiler.castShadow = true;
+            carGroup.add(spoiler);
+
+            // Spoiler stands
+            for (let sx = -0.7; sx <= 0.7; sx += 1.4) {
+                const standGeo = new THREE.CylinderGeometry(0.04, 0.05, 0.35, 8);
+                const stand = new THREE.Mesh(standGeo, darkBodyMaterial);
+                stand.position.set(sx, 0.78, -2.05);
+                stand.castShadow = true;
+                carGroup.add(stand);
+            }
+
+            // --- Side Mirror-like elements ---
+            for (let side = -1; side <= 1; side += 2) {
+                const mirrorGeo = new THREE.BoxGeometry(0.12, 0.1, 0.2, 4, 3, 3);
+                const mirror = new THREE.Mesh(mirrorGeo, carbonMaterial);
+                mirror.position.set(side * 1.05, 0.8, 0.6);
+                mirror.rotation.y = side * 0.3;
+                mirror.castShadow = true;
+                carGroup.add(mirror);
+            }
+
+            // --- Headlights ---
+            for (let hx = -0.55; hx <= 0.55; hx += 1.1) {
+                const headlightGeo = new THREE.SphereGeometry(0.12, 12, 8);
+                const headlight = new THREE.Mesh(headlightGeo, new THREE.MeshStandardMaterial({
+                    color: new THREE.Color('#ffffff'),
+                    metalness: 0.1,
+                    roughness: 0.05,
+                    emissive: new THREE.Color('#ffffff'),
+                    emissiveIntensity: 0.8,
+                }));
+                headlight.scale.set(1, 0.6, 0.4);
+                headlight.position.set(hx, 0.5, 2.35);
+                carGroup.add(headlight);
+
+                // Headlight glow
+                const glowGeo = new THREE.SphereGeometry(0.18, 8, 6);
+                const glow = new THREE.Mesh(glowGeo, new THREE.MeshBasicMaterial({
+                    color: new THREE.Color('#ffffff'),
+                    transparent: true,
+                    opacity: 0.25,
+                }));
+                glow.scale.set(1, 0.6, 0.3);
+                glow.position.copy(headlight.position);
+                glow.position.z += 0.05;
+                carGroup.add(glow);
+            }
+
+            // --- Taillights ---
+            for (let tx = -0.6; tx <= 0.6; tx += 1.2) {
+                const taillightGeo = new THREE.SphereGeometry(0.1, 10, 6);
+                const taillight = new THREE.Mesh(taillightGeo, new THREE.MeshStandardMaterial({
+                    color: new THREE.Color('#ff0000'),
+                    metalness: 0.1,
+                    roughness: 0.1,
+                    emissive: new THREE.Color('#ff0000'),
+                    emissiveIntensity: 0.7,
+                }));
+                taillight.scale.set(1, 0.5, 0.3);
+                taillight.position.set(tx, 0.55, -2.3);
+                carGroup.add(taillight);
+            }
+
+            // --- Wheels ---
+            function createWheel(x, z) {
+                const wheelGroup = new THREE.Group();
+
+                // Tire
+                const tireGeo = new THREE.CylinderGeometry(0.32, 0.32, 0.28, 32);
+                const tire = new THREE.Mesh(tireGeo, wheelMaterial);
+                tire.rotation.z = Math.PI / 2;
+                tire.castShadow = true;
+                tire.receiveShadow = true;
+                wheelGroup.add(tire);
+
+                // Rim
+                const rimGeo = new THREE.CylinderGeometry(0.24, 0.24, 0.29, 24);
+                const rim = new THREE.Mesh(rimGeo, wheelRimMaterial);
+                rim.rotation.z = Math.PI / 2;
+                wheelGroup.add(rim);
+
+                // Spokes (simplified)
+                for (let s = 0; s < 6; s++) {
+                    const spokeGeo = new THREE.BoxGeometry(0.04, 0.29, 0.18);
+                    const spoke = new THREE.Mesh(spokeGeo, wheelRimMaterial);
+                    spoke.rotation.z = (s / 6) * Math.PI;
+                    wheelGroup.add(spoke);
+                }
+
+                // Center cap
+                const capGeo = new THREE.CylinderGeometry(0.08, 0.08, 0.3, 16);
+                const cap = new THREE.Mesh(capGeo, new THREE.MeshStandardMaterial({
+                    color: new THREE.Color('#DC0000'),
+                    metalness: 0.9,
+                    roughness: 0.2,
+                }));
+                cap.rotation.z = Math.PI / 2;
+                wheelGroup.add(cap);
+
+                wheelGroup.position.set(x, 0.32, z);
+                return wheelGroup;
+            }
+
+            const wheelPositions = [
+                [-1.02, 1.55],
+                [1.02, 1.55],
+                [-1.02, -1.55],
+                [1.02, -1.55]
+            ]; // x, z
+            const wheels = [];
+            wheelPositions.forEach(([wx, wz]) => {
+                const wheel = createWheel(wx, wz);
+                carGroup.add(wheel);
+                wheels.push(wheel);
+            });
+
+            // --- Side Air Intakes ---
+            for (let side = -1; side <= 1; side += 2) {
+                const intakeGeo = new THREE.BoxGeometry(0.08, 0.3, 1.2, 2, 4, 6);
+                const intake = new THREE.Mesh(intakeGeo, carbonMaterial);
+                intake.position.set(side * 1.04, 0.4, 0.2);
+                carGroup.add(intake);
+            }
+
+            scene.add(carGroup);
+
+            // ─────────────────────────────────────
+            // AMBIENT PARTICLES
+            // ─────────────────────────────────────
+            const particlesGeo = new THREE.BufferGeometry();
+            const particlesCount = 200;
+            const particlesPositions = new Float32Array(particlesCount * 3);
+            for (let i = 0; i < particlesCount; i++) {
+                particlesPositions[i * 3] = (Math.random() - 0.5) * 12;
+                particlesPositions[i * 3 + 1] = Math.random() * 6 - 1;
+                particlesPositions[i * 3 + 2] = (Math.random() - 0.5) * 12;
+            }
+            particlesGeo.setAttribute('position', new THREE.BufferAttribute(particlesPositions, 3));
+            const particlesMat = new THREE.PointsMaterial({
+                color: 0xffffff,
+                size: 0.008,
+                transparent: true,
+                opacity: 0.5,
+                blending: THREE.AdditiveBlending,
+                depthWrite: false,
+            });
+            const particles = new THREE.Points(particlesGeo, particlesMat);
+            scene.add(particles);
+
+            // ─────────────────────────────────────
+            // MOUSE INTERACTION
+            // ─────────────────────────────────────
+            const mouse = { x: 0, y: 0, targetX: 0, targetY: 0 };
+            const defaultCameraPos = camera.position.clone();
+            const defaultLookAt = new THREE.Vector3(0, 0.35, 0);
+
+            document.addEventListener('mousemove', (e) => {
+                mouse.targetX = (e.clientX / window.innerWidth) * 2 - 1;
+                mouse.targetY = -(e.clientY / window.innerHeight) * 2 + 1;
+            });
+
+            document.addEventListener('touchmove', (e) => {
+                if (e.touches.length === 1) {
+                    mouse.targetX = (e.touches[0].clientX / window.innerWidth) * 2 - 1;
+                    mouse.targetY = -(e.touches[0].clientY / window.innerHeight) * 2 + 1;
+                }
+            }, { passive: true });
+
+            // ─────────────────────────────────────
+            // SCROLL TRACKING
+            // ─────────────────────────────────────
+            let scrollProgress = 0;
+            const heroSection = document.getElementById('hero-section');
+
+            function updateScrollProgress() {
+                const rect = heroSection.getBoundingClientRect();
+                const heroHeight = heroSection.offsetHeight;
+                const scrolled = -rect.top;
+                scrollProgress = Math.max(0, Math.min(1, scrolled / heroHeight));
+            }
+
+            // ─────────────────────────────────────
+            // RENDER LOOP
+            // ─────────────────────────────────────
+            const clock = new THREE.Clock();
+            let time = 0;
+
+            function animate() {
+                requestAnimationFrame(animate);
+
+                const dt = Math.min(clock.getDelta(), 0.1);
+                time += dt;
+
+                // Smooth mouse follow
+                mouse.x += (mouse.targetX - mouse.x) * 0.05;
+                mouse.y += (mouse.targetY - mouse.y) * 0.05;
+
+                updateScrollProgress();
+
+                // Camera orbit based on mouse + scroll
+                const orbitX = mouse.x * 0.7;
+                const orbitY = mouse.y * 0.35;
+                const scrollPullBack = scrollProgress * 1.8;
+                const scrollLift = scrollProgress * 0.6;
+
+                const targetCamX = defaultCameraPos.x + orbitX - scrollPullBack * 0.3;
+                const targetCamY = defaultCameraPos.y + orbitY + scrollLift;
+                const targetCamZ = defaultCameraPos.z + scrollPullBack;
+
+                camera.position.x += (targetCamX - camera.position.x) * 0.03;
+                camera.position.y += (targetCamY - camera.position.y) * 0.03;
+                camera.position.z += (targetCamZ - camera.position.z) * 0.03;
+
+                const lookTargetX = orbitX * 0.5;
+                const lookTargetY = 0.35 + orbitY * 0.4 + scrollProgress * 0.3;
+                camera.lookAt(lookTargetX, lookTargetY, 0);
+
+                // Subtle car float
+                carGroup.position.y = Math.sin(time * 0.7) * 0.04;
+                carGroup.rotation.y += (mouse.x * 0.25 - carGroup.rotation.y) * 0.02;
+
+                // Subtle wheel rotation based on virtual speed
+                const virtualSpeed = 1 + scrollProgress * 3;
+                wheels.forEach(w => {
+                    w.children.forEach(child => {
+                        if (child.geometry && child.geometry.type === 'CylinderGeometry' && child
+                            .geometry.parameters.radiusTop > 0.2) {
+                            child.rotation.x += dt * virtualSpeed * 2;
+                        }
+                    });
+                });
+
+                // Particle drift
+                particles.rotation.y += dt * 0.04;
+                particles.rotation.x += dt * 0.02;
+                particles.material.opacity = 0.35 + Math.sin(time * 0.5) * 0.15;
+
+                // Under glow pulsing
+                underGlow.intensity = 2.5 + Math.sin(time * 1.2) * 0.8 + scrollProgress * 2;
+
+                // Dynamic lighting based on scroll
+                keyLight.intensity = 4.5 - scrollProgress * 1.5;
+                rimLight.intensity = 2.5 + scrollProgress * 1.5;
+
+                // Fade 3D scene opacity based on scroll
+                const canvasOpacity = 1 - scrollProgress * 0.7;
+                renderer.domElement.style.opacity = Math.max(canvasOpacity, 0.3);
+
+                // Hero content fade
+                if (heroContent) {
+                    heroContent.style.opacity = Math.max(0, 1 - scrollProgress * 2);
+                    heroContent.style.transform = `translateY(${scrollProgress * 60}px)`;
+                }
+                if (scrollIndicator) {
+                    scrollIndicator.style.opacity = Math.max(0, 1 - scrollProgress * 3);
+                }
+
+                renderer.render(scene, camera);
+            }
+
+            // ─────────────────────────────────────
+            // RESIZE HANDLER
+            // ─────────────────────────────────────
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            });
+
+            // ─────────────────────────────────────
+            // LENIS SMOOTH SCROLL
+            // ─────────────────────────────────────
+            const lenis = new Lenis({
+                duration: 1.6,
+                easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+                smoothWheel: true,
+                wheelMultiplier: 1,
+                smoothTouch: false,
+                touchMultiplier: 2,
+                infinite: false,
+            });
+
+            function raf(timeLenis) {
+                lenis.raf(timeLenis);
+                requestAnimationFrame(raf);
+            }
+            requestAnimationFrame(raf);
+
+            // ─────────────────────────────────────
+            // GSAP SCROLLTRIGGER ANIMATIONS
+            // ─────────────────────────────────────
+            gsap.registerPlugin(ScrollTrigger);
+
+            // Sync ScrollTrigger with Lenis
+            lenis.on('scroll', ScrollTrigger.update);
+            gsap.ticker.add((timeGSAP) => {
+                lenis.raf(timeGSAP * 1000);
+            });
+            gsap.ticker.lagSmoothing(0);
+
+            // Performance counters animation
+            const perfSection = document.getElementById('performance');
+            if (perfSection) {
+                ScrollTrigger.create({
+                    trigger: perfSection,
+                    start: 'top 70%',
+                    once: true,
+                    onEnter: () => {
+                        // Animate counters
+                        document.querySelectorAll('.counter').forEach(el => {
+                            const target = parseInt(el.dataset.target);
+                            const duration = 2.2;
+                            const startTime = performance.now();
+
+                            function updateCounter(now) {
+                                const elapsed = (now - startTime) / 1000;
+                                const progress = Math.min(elapsed / duration, 1);
+                                const eased = 1 - Math.pow(1 - progress, 3);
+                                const current = Math.round(target * eased);
+                                el.textContent = current.toLocaleString();
+                                if (progress < 1) {
+                                    requestAnimationFrame(updateCounter);
+                                } else {
+                                    el.textContent = target.toLocaleString();
+                                }
+                            }
+                            requestAnimationFrame(updateCounter);
+                        });
+
+                        // Animate decimal counters
+                        document.querySelectorAll('.counter-decimal').forEach(el => {
+                            const target = parseFloat(el.dataset.target);
+                            const duration = 2.2;
+                            const startTime = performance.now();
+
+                            function updateDecimal(now) {
+                                const elapsed = (now - startTime) / 1000;
+                                const progress = Math.min(elapsed / duration, 1);
+                                const eased = 1 - Math.pow(1 - progress, 3);
+                                const current = (target * eased).toFixed(1);
+                                el.textContent = current;
+                                if (progress < 1) {
+                                    requestAnimationFrame(updateDecimal);
+                                } else {
+                                    el.textContent = target.toFixed(1);
+                                }
+                            }
+                            requestAnimationFrame(updateDecimal);
+                        });
+
+                        // Animate gauge fills
+                        document.querySelectorAll('.perf-gauge-fill').forEach(gauge => {
+                            const fillPercent = gauge.dataset.fill;
+                            gsap.to(gauge, {
+                                width: fillPercent + '%',
+                                duration: 2,
+                                ease: 'power3.out',
+                                delay: 0.3,
+                            });
+                        });
+                    },
+                });
+            }
+
+            // Tech cards staggered entrance
+            const techSection = document.getElementById('tech');
+            if (techSection) {
+                ScrollTrigger.create({
+                    trigger: techSection,
+                    start: 'top 75%',
+                    once: true,
+                    onEnter: () => {
+                        gsap.fromTo('.tech-card', {
+                            y: 60,
+                            opacity: 0,
+                            scale: 0.92,
+                        }, {
+                            y: 0,
+                            opacity: 1,
+                            scale: 1,
+                            duration: 1,
+                            stagger: 0.12,
+                            ease: 'power3.out',
+                        });
+                    },
+                });
+            }
+
+            // Collection cards entrance
+            const collectionSection = document.getElementById('collection');
+            if (collectionSection) {
+                ScrollTrigger.create({
+                    trigger: collectionSection,
+                    start: 'top 80%',
+                    once: true,
+                    onEnter: () => {
+                        gsap.fromTo('.collection-card', {
+                            y: 50,
+                            opacity: 0,
+                        }, {
+                            y: 0,
+                            opacity: 1,
+                            duration: 0.9,
+                            stagger: 0.15,
+                            ease: 'power3.out',
+                        });
+                    },
+                });
+            }
+
+            // Experience dots entrance
+            const expSection = document.getElementById('experience');
+            if (expSection) {
+                ScrollTrigger.create({
+                    trigger: expSection,
+                    start: 'top 80%',
+                    once: true,
+                    onEnter: () => {
+                        gsap.fromTo('.exp-dot', {
+                            scale: 0,
+                            opacity: 0,
+                        }, {
+                            scale: 1,
+                            opacity: 1,
+                            duration: 0.7,
+                            stagger: 0.2,
+                            ease: 'back.out(1.7)',
+                        });
+                    },
+                });
+            }
+
+            // Performance cards entrance
+            if (perfSection) {
+                ScrollTrigger.create({
+                    trigger: perfSection,
+                    start: 'top 75%',
+                    once: true,
+                    onEnter: () => {
+                        gsap.fromTo('.perf-card', {
+                            y: 40,
+                            opacity: 0,
+                            scale: 0.95,
+                        }, {
+                            y: 0,
+                            opacity: 1,
+                            scale: 1,
+                            duration: 0.8,
+                            stagger: 0.1,
+                            ease: 'power3.out',
+                        });
+                    },
+                });
+            }
+
+            // ─────────────────────────────────────
+            // TECH CARD TILT EFFECT
+            // ─────────────────────────────────────
+            document.querySelectorAll('.tech-card[data-tilt]').forEach(card => {
+                card.addEventListener('mousemove', (e) => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    const centerX = rect.width / 2;
+                    const centerY = rect.height / 2;
+                    const rotateX = ((y - centerY) / centerY) * -8;
+                    const rotateY = ((x - centerX) / centerX) * 8;
+                    card.style.transform =
+                        `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-8px)`;
+                });
+                card.addEventListener('mouseleave', () => {
+                    card.style.transform =
+                        'perspective(800px) rotateX(0deg) rotateY(0deg) translateY(0px)';
+                    card.style.transition = 'transform 0.6s cubic-bezier(0.19, 1, 0.22, 1)';
+                    setTimeout(() => {
+                        card.style.transition = 'all 0.5s cubic-bezier(0.19, 1, 0.22, 1)';
+                    }, 600);
+                });
+            });
+
+            // ─────────────────────────────────────
+            // COLLECTION CARD CLICK — Smooth scroll
+            // ─────────────────────────────────────
+            document.querySelectorAll('.collection-card').forEach(card => {
+                card.addEventListener('click', () => {
+                    card.style.transform = 'scale(0.96)';
+                    setTimeout(() => {
+                        card.style.transform = '';
+                    }, 200);
+                });
+            });
+
+            // ─────────────────────────────────────
+            // SMOOTH ANCHOR LINKS
+            // ─────────────────────────────────────
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const targetId = anchor.getAttribute('href');
+                    const targetEl = document.querySelector(targetId);
+                    if (targetEl && lenis) {
+                        lenis.scrollTo(targetEl, {
+                            offset: -20,
+                            duration: 1.8,
+                            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+                        });
+                    }
+                });
+            });
+
+            // ─────────────────────────────────────
+            // SCROLL INDICATOR CLICK
+            // ─────────────────────────────────────
+            if (scrollIndicator) {
+                scrollIndicator.addEventListener('click', () => {
+                    const perfEl = document.getElementById('performance');
+                    if (perfEl && lenis) {
+                        lenis.scrollTo(perfEl, {
+                            offset: -40,
+                            duration: 1.8,
+                            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+                        });
+                    }
+                });
+            }
+
+            // ─────────────────────────────────────
+            // KEYBOARD NAVIGATION
+            // ─────────────────────────────────────
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowDown' || e.key === 'j') {
+                    e.preventDefault();
+                    lenis.scrollTo('+=300', { duration: 1, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 *
+                            t)) });
+                } else if (e.key === 'ArrowUp' || e.key === 'k') {
+                    e.preventDefault();
+                    lenis.scrollTo('-=300', { duration: 1, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 *
+                            t)) });
+                }
+            });
+
+            // ─────────────────────────────────────
+            // INITIALIZE
+            // ─────────────────────────────────────
+            function init() {
+                // Hide loading overlay
+                setTimeout(() => {
+                    loadingOverlay.classList.add('hidden');
+                    // Reveal hero content
+                    if (heroContent) {
+                        gsap.fromTo(heroContent.children, {
+                            y: 40,
+                            opacity: 0,
+                        }, {
+                            y: 0,
+                            opacity: 1,
+                            duration: 1.2,
+                            stagger: 0.15,
+                            ease: 'power3.out',
+                            delay: 0.3,
+                        });
+                    }
+                    if (scrollIndicator) {
+                        gsap.fromTo(scrollIndicator, {
+                            opacity: 0,
+                            y: 20,
+                        }, {
+                            opacity: 0.7,
+                            y: 0,
+                            duration: 1,
+                            delay: 1,
+                            ease: 'power3.out',
+                        });
+                    }
+                }, 1800);
+
+                // Start render loop
+                animate();
+            }
+
+            init();
+
+            // ─────────────────────────────────────
+            // EXPORT FOR DEBUG
+            // ─────────────────────────────────────
+            console.log('%c🏎️  Ferrari — Engineered For Emotion  %c|  %c3D Showroom Active',
+                'color:#DC0000;font-size:1.2em;font-weight:bold;',
+                '',
+                'color:#aaa;');
+            console.log('%cInteractive 3D Ferrari • GSAP ScrollTrigger • Lenis Smooth Scroll • Three.js',
+                'color:#888;font-style:italic;');
+            console.log('%cUse mouse to orbit • Scroll to explore • Click cards to interact',
+                'color:#666;');
+        })();
+    </script>
+</body>
+</html>
